@@ -1,44 +1,66 @@
 # S&P 500 Stock Screener
 
-A Python-based stock screener that filters S&P 500 companies by sector, market cap, and other fundamentals. Built on top of an existing MySQL database of company data, with a command-line interface for flexible querying.
+A Python-based stock screener that filters S&P 500 companies by sector, market cap, PE ratio, and revenue growth. Built on a MySQL database of company fundamentals for all 503 S&P 500 constituents, with a command-line interface for flexible querying.
 
 ## Features
-- Pulls company fundamentals (sector, market cap, revenue growth) from a MySQL database
-- Composable filter functions (sector, market cap) chainable with AND logic
+- Full S&P 500 dataset (503 companies) stored in MySQL, pulled via `yfinance`
+- Composable filter functions (sector, market cap, PE ratio, revenue growth) chainable with AND logic
 - CLI interface via `argparse` for querying without editing code
-- Live data fetch supplement via `yfinance` for real-time PE ratios
+- Upsert-based data population script — safe to re-run to refresh fundamentals
 
 ## Tech Stack
 - Python 3
 - MySQL (mysql-connector-python)
 - yfinance
+- pandas
 - argparse
 
 ## Setup
+
 1. Clone the repo
+
 ```bash
-   git clone https://github.com/Kingoflife24/stock-screener.git
-   cd stock-screener
+git clone https://github.com/Kingoflife24/stock-screener.git
+cd stock-screener
 ```
+
 2. Create a virtual environment and install dependencies
+
 ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
+
 3. Set up your `.env` file with your MySQL password
 
-4. Ensure your MySQL database `sp500_companies` with table `companies` is populated (see [sp500-sql project](https://github.com/Kingoflife24/sp500-sql) for schema)
+4. Create the `companies` table in a `sp500_companies` MySQL database, then populate it:
+
+```bash
+python populate_db.py
+```
+
+This pulls the current S&P 500 ticker list from Wikipedia and fetches fundamentals for each via `yfinance`. Takes a few minutes on first run.
 
 ## Usage
+
 ```bash
-python main.py --sector Technology --min-cap 500000000000
+python main.py --sector Technology --max-pe 25 --min-growth 0.1
 ```
+
+**Available filters:**
+
+| Flag | Description | Example |
+|---|---|---|
+| `--sector` | Filter by GICS sector | `Technology` |
+| `--min-cap` | Minimum market cap | `500000000000` |
+| `--max-pe` | Maximum PE ratio | `25` |
+| `--min-growth` | Minimum revenue growth (decimal) | `0.1` (10%) |
 
 **Example output:**
 
 ## Roadmap
-- [ ] Expand dataset to full S&P 500 (~500 companies)
-- [ ] Add PE ratio and revenue growth filters
-- [ ] Add scoring/ranking system
-- [ ] Add pytest test coverage
+
+- [ ] Add scoring/ranking system to weight multiple factors
+- [ ] Add pytest test coverage for filter functions
+- [ ] Optional: simple Streamlit front-end
