@@ -1,7 +1,3 @@
-def pe_below(companies, max_pe):
-    """Filter companies with PE ratio below threshold. Requires 'pe_ratio' key."""
-    return [c for c in companies if c.get("pe_ratio") is not None and c["pe_ratio"] < max_pe]
-
 def sector_is(companies, sector):
     return [c for c in companies if c.get("Sector") == sector]
 
@@ -17,3 +13,9 @@ def apply_filters(companies, filters):
     for func, args in filters:
         result = func(result, *args)
     return result
+
+def pe_below(companies, max_pe):
+    return [c for c in companies if c.get("Pe_ratio") is not None and c["Pe_ratio"] < max_pe]
+
+def revenue_growth_above(companies, min_growth):
+    return [c for c in companies if c.get("Revenuegrowth") is not None and c["Revenuegrowth"] > min_growth]

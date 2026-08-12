@@ -15,7 +15,7 @@ def get_connection():
 def get_all_companies():
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT Symbol, Shortname, Sector, Marketcap, Revenuegrowth FROM companies")
+    cursor.execute("SELECT Symbol, Shortname, Sector, Marketcap, Revenuegrowth, Pe_ratio FROM companies")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()

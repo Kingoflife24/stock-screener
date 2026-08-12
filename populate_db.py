@@ -29,6 +29,7 @@ def fetch_fundamentals(symbol):
         "Marketcap": info.get("marketCap"),
         "Ebitda": info.get("ebitda"),
         "Revenuegrowth": info.get("revenueGrowth"),
+        "Pe_ratio": info.get("trailingPE"),
         "City": info.get("city"),
         "State": info.get("state"),
         "Country": info.get("country"),
